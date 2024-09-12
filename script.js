@@ -85,6 +85,7 @@ const products = [
   },
 ];
 
+//display to dessert card container
 products.forEach(
   ({ name, id, price, category }) => {
     dessertCards.innerHTML += `
@@ -103,30 +104,31 @@ products.forEach(
 
 class ShoppingCart {
   constructor() {
-    this.items = [];
+    this.items = [];    //to contain the added products
     this.total = 0;
     this.taxRate = 8.25;
   }
 
+  //id is from clicked 'add to cart' button from an item in the desert card container & products is from the array
   addItem(id, products) {
-    const product = products.find((item) => item.id === id);
-    const { name, price } = product;
-    this.items.push(product);
+    const product = products.find((item) => item.id === id);      //finds what the clicked product (id) corresponds to from the products array
+    const { name, price } = product;    
+    this.items.push(product);                                     //pushes the added product to items array
 
-    const totalCountPerProduct = {};
-    this.items.forEach((dessert) => {
-      totalCountPerProduct[dessert.id] = (totalCountPerProduct[dessert.id] || 0) + 1;
+    const totalCountPerProduct = {};    //for counts
+    this.items.forEach((dessert) => {    
+      totalCountPerProduct[dessert.id] = (totalCountPerProduct[dessert.id] || 0) + 1;     //to check/count how many are added per product ex {1:2, 2,1} => Vanilla Cupcakes: 2 items, French Macaron: 1 item
     })
 
-    const currentProductCount = totalCountPerProduct[product.id];
-    const currentProductCountSpan = document.getElementById(`product-count-for-id${id}`);
+    const currentProductCount = totalCountPerProduct[product.id];       //outputs value or the actual number added of the product //For the Vanilla Cupcakes (id: 1): currentProductCount = 2 | For the French Macaron (id: 2): currentProductCount = 1 
+    const currentProductCountSpan = document.getElementById(`product-count-for-id${id}`);   //this DOM will get this from the ternary operation below
 
     currentProductCount > 1 
       ? currentProductCountSpan.textContent = `${currentProductCount}x`
       : productsContainer.innerHTML += `
       <div id="dessert${id}" class="product">
         <p>
-          <span class="product-count" id="product-count-for-id${id}"></span>${name}
+          <span class="product-count" id="product-count-for-id${id}"></span>${name}   ${/*<span> will be updated if currentProduct > 1 is true*/ ''}
         </p>
         <p>${price}</p>
       </div>
@@ -179,7 +181,7 @@ const addToCartBtns = document.getElementsByClassName("add-to-cart-btn");
 [...addToCartBtns].forEach(
   (btn) => {
     btn.addEventListener("click", (event) => {
-      cart.addItem(Number(event.target.id), products);
+      cart.addItem(Number(event.target.id), products);      //event = contains information about the event that occurred | target = property of the event object. the element that triggered the event. the button that was clicked. | id = accessess the id of the button that was clicked
       totalNumberOfItems.textContent = cart.getCounts();
       cart.calculateTotal();
     })
